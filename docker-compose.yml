@@ -14,15 +14,5 @@ services:
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
     volumes:
       - steamdeck_data:/app/data
-    # Resource limits (optional)
-    deploy:
-      resources:
-        limits:
-          memory: 128M
-          cpus: '0.1'
-        reservations:
-          memory: 64M
-          cpus: '0.05'
-
 volumes:
   steamdeck_data:

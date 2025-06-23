@@ -7,9 +7,6 @@ WORKDIR /app
 # Copy the application
 COPY main.ts /app/
 
-# Create data directory and set permissions
-RUN mkdir -p /app/data
-
 # Cache dependencies
 RUN deno cache main.ts
 
