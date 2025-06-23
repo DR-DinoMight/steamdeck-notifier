@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@goatdb/goatdb": "jsr:@goatdb/goatdb@^0.3.1",
+    "@std/assert": "jsr:@std/assert@^1.0.13"
+  }
+}

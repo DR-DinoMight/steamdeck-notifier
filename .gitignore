@@ -1,0 +1,33 @@
+# Deno
+.DS_Store
+*.log
+logs/
+status/
+
+# Environment files
+.env
+.env.*
+
+# Docker
+*.pid
+*.seed
+
+# Node (if any tooling is used)
+node_modules/
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+*.bak
+*.tmp
+
+# Data
+/data/
