@@ -7,6 +7,15 @@ services:
     volumes:
       - ./data:/app/data
     # Resource limits (optional)
+    environment:
+      COUNTRY_CODE: ${COUNTRY_CODE}
+      CHECK_INTERVAL: ${CHECK_INTERVAL}
+      ENABLE_LOGS: ${ENABLE_LOGS}
+      CSV_DIR: ${CSV_DIR}
+      STATUS_FILE: ${STATUS_FILE}
+      LOG_FILE: ${LOG_FILE}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
     deploy:
       resources:
         limits:
