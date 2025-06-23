@@ -3,10 +3,6 @@ services:
     build: .
     container_name: steam-deck-notifier
     restart: unless-stopped
-
-    volumes:
-      - ./data:/app/data
-    # Resource limits (optional)
     environment:
       COUNTRY_CODE: ${COUNTRY_CODE}
       CHECK_INTERVAL: ${CHECK_INTERVAL}
@@ -16,6 +12,9 @@ services:
       LOG_FILE: ${LOG_FILE}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+    volumes:
+      - steamdeck_data:/app/data
+    # Resource limits (optional)
     deploy:
       resources:
         limits:
@@ -24,3 +23,6 @@ services:
         reservations:
           memory: 64M
           cpus: '0.05'
+
+volumes:
+  steamdeck_data:
