@@ -4,12 +4,12 @@ A Docker container that monitors Steam Deck refurbished inventory and sends Tele
 
 ## Features
 
-- 🎮 Monitors all Steam Deck models (64GB-1TB, LCD/OLED)
+- 🎮 Monitors all Steam Deck models (64GB–1TB, LCD/OLED)
 - 📱 Telegram notifications with rich formatting
 - 🌍 Multi-region support (US, DE, UK, etc.)
-- 📊 CSV logging for availability tracking
+- 📊 File-based JSON logging for availability tracking
 - ⏰ Configurable check intervals (default: 3 minutes)
-- 🐋 Docker containerized for easy deployment
+- 🐋 Docker containerised for easy deployment
 
 ## Quick Start
 
@@ -27,13 +27,9 @@ A Docker container that monitors Steam Deck refurbished inventory and sends Tele
 
 ```bash
 git clone <repository>
-cd steam-deck-notifier
+cd steamdeck-notifier
 
-# Copy environment template
-cp .env.example .env
-
-# Edit .env with your credentials
-nano .env
+# Create a .env file (see configuration below)
 ```
 
 ### 3. Run with Docker Compose
@@ -53,31 +49,34 @@ docker-compose down
 
 ```bash
 # Build the image
-docker build -t steam-deck-notifier .
+docker build -t steamdeck-notifier .
 
 # Run the container
 docker run -d \
-  --name steam-deck-notifier \
+  --name steamdeck-notifier \
   --restart unless-stopped \
   -e TELEGRAM_BOT_TOKEN="your_bot_token" \
   -e TELEGRAM_CHAT_ID="your_chat_id" \
   -e COUNTRY_CODE="US" \
   -e CHECK_INTERVAL="180" \
-  -e NOTIFIER_DB="/app/goatdb" \
-  steam-deck-notifier
+  -e ENABLE_LOGS="true" \
+  -e STATUS_FILE="/app/data/status.json" \
+  -e LOG_FILE="/app/data/log.json" \
+  -v $(pwd)/data:/app/data \
+  steamdeck-notifier
 ```
 
 ## Configuration
 
-| Environment Variable | Required | Default | Description |
-|---------------------|----------|---------|-------------|
-| `TELEGRAM_BOT_TOKEN` | ✅ | - | Your Telegram bot token |
-| `TELEGRAM_CHAT_ID` | ✅ | - | Telegram chat/channel ID |
-| `COUNTRY_CODE` | ❌ | `DE` | Steam region (US, DE, UK, etc.) |
-| `CHECK_INTERVAL` | ❌ | `180` | Check interval in seconds |
-| `ENABLE_LOGS` | ❌ | `false` | Set to `true` to enable logging of availability checks in GoatDB |
-| `STATUS_FILE` | ❌ | `./status.json` | Path to the JSON file for status data |
-| `LOG_FILE` | ❌ | `./log.json` | Path to the JSON file for log data |
+| Environment Variable    | Required | Default                  | Description                                 |
+|------------------------|----------|--------------------------|---------------------------------------------|
+| `TELEGRAM_BOT_TOKEN`   | ✅       | -                        | Your Telegram bot token                     |
+| `TELEGRAM_CHAT_ID`     | ✅       | -                        | Telegram chat/channel ID                    |
+| `COUNTRY_CODE`         | ❌       | `DE`                     | Steam region (US, DE, UK, etc.)             |
+| `CHECK_INTERVAL`       | ❌       | `180`                    | Check interval in seconds                   |
+| `ENABLE_LOGS`          | ❌       | `false`                  | Set to `true` to enable logging             |
+| `STATUS_FILE`          | ❌       | `/app/data/status.json`  | Path to the JSON file for status data       |
+| `LOG_FILE`             | ❌       | `/app/data/log.json`     | Path to the JSON file for log data          |
 
 ## Monitored Models
 
@@ -89,11 +88,11 @@ docker run -d \
 
 ## Supported Regions
 
-- `US` - United States
-- `DE` - Germany
-- `UK` - United Kingdom
-- `CA` - Canada
-- `AU` - Australia
+- `US` – United States
+- `DE` – Germany
+- `UK` – United Kingdom
+- `CA` – Canada
+- `AU` – Australia
 - And many more Steam regions
 
 ## Sample Notification
@@ -110,31 +109,20 @@ docker run -d \
 
 ## Logs and Data
 
-- **File-based JSON**: All availability logs and status are now stored in local JSON files.
+- **File-based JSON**: All availability logs and status are stored in local JSON files (see `STATUS_FILE` and `LOG_FILE`).
 - **Log Data**: Each check is appended as an object to the log file (if `ENABLE_LOGS` is set to `true`).
 - **Status Data**: The latest status for each model/region is stored as a key-value pair in the status file.
-- **No database required**: The project no longer uses GoatDB, SQLite, or CSV files. All data is managed by simple file-based storage.
-
+- **No database required**: The project does not use GoatDB, SQLite, or CSV files. All data is managed by simple file-based storage.
 
 ### Error Handling
 If a file is missing or corrupted, the app will log an error and continue running with a fresh store. File write errors are also logged but do not crash the app.
-
-## Configuration Example
-
-| Environment Variable | Required | Default | Description |
-|---------------------|----------|---------|-------------|
-| `TELEGRAM_BOT_TOKEN` | ✅ | - | Your Telegram bot token |
-| `TELEGRAM_CHAT_ID` | ✅ | - | Telegram chat/channel ID |
-| `COUNTRY_CODE` | ❌ | `DE` | Steam region (US, DE, UK, etc.) |
-| `CHECK_INTERVAL` | ❌ | `180` | Check interval in seconds |
-| `NOTIFIER_DB` | ❌ | `/app/goatdb` | Path to GoatDB data directory |
 
 ## Troubleshooting
 
 ### Check Container Status
 ```bash
 docker-compose ps
-docker-compose logs steam-deck-notifier
+docker-compose logs steamdeck-notifier
 ```
 
 ### Test Telegram Bot
@@ -159,18 +147,13 @@ curl -X POST "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage" \
 # Install Deno
 curl -fsSL https://deno.land/install.sh | sh
 
-deno add jsr:@goatdb/goatdb
-
-# Copy .env.example to .env and change accordingly
-cp .env.example .env
-
-# Run locally
-NOTIFIER_DB=./goatdb deno run --allow-net --allow-read --allow-write --allow-env main.ts
+# Run locally (with environment variables set)
+TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy deno run --allow-net --allow-read --allow-write --allow-env main.ts
 ```
 
 ### Build Custom Image
 ```bash
-docker build -t my-steam-deck-notifier .
+docker build -t my-steamdeck-notifier .
 ```
 
 ## Attribution
@@ -180,11 +163,11 @@ This project is based on [oblassgit/refurbished-steam-deck-notifier](https://git
 **Modifications:**
 - Rewritten in Deno
 - Uses Telegram for notifications instead of Discord
-- Uses GoatDB for all data storage
+- Uses file-based JSON for all data storage
 - Added ability to run in Docker instead of building executables
 
 See [LICENSE](./LICENSE) for details.
 
-## License
+## Licence
 
-GNU Affero General Public License v3.0
+GNU Affero General Public Licence v3.0
